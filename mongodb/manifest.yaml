@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: roboshop
+  labels:
+    app: mongodb
+spec:
+  ports:
+  - port: 27017
+    name: mongodb
+  clusterIP: None # headless service
+  selector:
+    name: mongodb
+    tier: db
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+  namespace: roboshop
+spec:
+  serviceName: "mongodb"
+  replicas: 3
+  selector:
+    matchLabels:
+      name: mongodb
+      tier: db
+  template:
+    metadata:
+      labels:
+        name: mongodb
+        tier: db
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mongodb
+        image: macharavikishore/mongodb:v1
+        imagePullPolicy: Always # or specify a pull policy according to your needs
+        ports:
+        - containerPort: 27017
+          name: mongodb
+        volumeMounts:
+        - name: mongodb-volume
+          mountPath: /data/db
+  volumeClaimTemplates:
+  - metadata:
+      name: mongodb-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "ebs-sc" # update to match your StorageClass
+      resources:
+        requests:
+          storage: 1Gi
+
