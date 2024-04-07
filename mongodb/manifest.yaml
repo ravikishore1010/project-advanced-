@@ -36,7 +36,7 @@ spec:
       containers:
       - name: mongodb
         image: macharavikishore/mongodb:v1
-        imagePullPolicy: Always # or specify a pull policy according to your needs
+         # or specify a pull policy according to your needs
         ports:
         - containerPort: 27017
           name: mongodb
@@ -51,5 +51,5 @@ spec:
       storageClassName: "ebs-sc" # update to match your StorageClass
       resources:
         requests:
-          storage: 1Gi
+          storage: 2Gi
 
